@@ -12,7 +12,6 @@ struct MonitorChannel {
     uv_work_t request;
     // javascript callback
     Nan::Callback* callback;
-
     // Configuration data for monitoring alsa cards
     char* card_name;
 };
@@ -66,8 +65,10 @@ void Monitor(const Nan::FunctionCallbackInfo<v8::Value>& info) {
 }
 
 void monitor_init(v8::Local<v8::Object> exports) {
-    exports->Set(
+    v8::Local<v8::Context> context = exports->CreationContext();
+    exports->Set(context,
         Nan::New("monitor").ToLocalChecked(),
-        Nan::New<v8::FunctionTemplate>(Monitor)->GetFunction()
+        Nan::New<v8::FunctionTemplate>(Monitor)->GetFunction(context)
+          .ToLocalChecked()
     );
 }
